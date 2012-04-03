@@ -1,4 +1,4 @@
-package com.lingona.eventstore.joliver.wireup;
+package com.lingona.es4j.wireup;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

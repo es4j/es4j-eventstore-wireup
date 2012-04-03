@@ -1,4 +1,4 @@
-package com.lingona.eventstore.joliver.wireup;
+package com.lingona.es4j.wireup;
 
 import com.lingona.eventstore.joliver.core.Conversion.IConverter;
 import java.util.HashMap;

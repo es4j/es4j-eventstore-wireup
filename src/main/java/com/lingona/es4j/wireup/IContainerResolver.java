@@ -1,4 +1,4 @@
-package com.lingona.eventstore.joliver.wireup;
+package com.lingona.es4j.wireup;
 
 
 public class IContainerResolver<TContainer, TService> {
