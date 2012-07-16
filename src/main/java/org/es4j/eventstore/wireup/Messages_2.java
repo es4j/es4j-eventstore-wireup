@@ -1,7 +1,7 @@
-package com.lingona.es4j.wireup;
+package org.es4j.eventstore.wireup;
 
 
-class Messages {
+class Messages_2 {
     static final String AsyncDispatchSchedulerRegistered = "";
     static final String DispatcherRegistered = "";
     static final String EventUpconverterRegistered = "";

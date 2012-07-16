@@ -1,4 +1,4 @@
-package com.lingona.es4j.wireup;
+package org.es4j.eventstore.wireup;
 
 import com.lingona.eventstore.joliver.api.Dispatcher.IDispatchCommits;
 import com.lingona.eventstore.joliver.api.Dispatcher.IScheduleDispatches;
@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 //using Persistence;
 
 
-public class SynchronousDispatchSchedulerWireup extends Wireup {
+public class SynchronousDispatchSchedulerWireup extends Wireup_2 {
     private static final Logger logger = LoggerFactory.getLogger(SynchronousDispatchSchedulerWireup.class);
 
-    public SynchronousDispatchSchedulerWireup(Wireup wireup, IDispatchCommits dispatcher) {
+    public SynchronousDispatchSchedulerWireup(Wireup_2 wireup, IDispatchCommits dispatcher) {
         super(wireup);
-	logger.debug(Messages.SyncDispatchSchedulerRegistered);
+	logger.debug(Messages_2.SyncDispatchSchedulerRegistered);
 	this.dispatchTo((dispatcher!=null)? dispatcher : new NullDispatcher());
         IDispatchCommits    dispatchCommits    = this.container.resolve();
         IPersistStreams     persistStreams     = this.container.resolve();
@@ -27,7 +27,7 @@ public class SynchronousDispatchSchedulerWireup extends Wireup {
     }
 
     public SynchronousDispatchSchedulerWireup dispatchTo(IDispatchCommits instance) {
-        logger.debug(Messages.DispatcherRegistered, instance.getClass().getName());
+        logger.debug(Messages_2.DispatcherRegistered, instance.getClass().getName());
         this.container.register(instance);
         return this;
     }

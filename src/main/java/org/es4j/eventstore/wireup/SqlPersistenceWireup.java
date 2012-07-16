@@ -1,4 +1,4 @@
-package com.lingona.es4j.wireup;
+package org.es4j.eventstore.wireup;
 
 import com.lingona.eventstore.joliver.api.Serialization.ISerialize;
 import com.lingona.eventstore.joliver.core.system.TransactionScopeOption;
@@ -19,11 +19,11 @@ public class SqlPersistenceWireup extends PersistenceWireup {
     private final static int DefaultPageSize = 512;
     private int pageSize = DefaultPageSize;
 
-    public SqlPersistenceWireup(Wireup wireup, IConnectionFactory connectionFactory) {
+    public SqlPersistenceWireup(Wireup_2 wireup, IConnectionFactory connectionFactory) {
         super(wireup);
-        logger.debug(Messages.ConnectionFactorySpecified, connectionFactory);
+        logger.debug(Messages_2.ConnectionFactorySpecified, connectionFactory);
 
-        logger.info(Messages.AutoDetectDialect); //Verbose
+        logger.info(Messages_2.AutoDetectDialect); //Verbose
         
         ISqlDialect sqlDialect = null;
         this.container.register((ISqlDialect)null); // auto-detect
@@ -49,13 +49,13 @@ public class SqlPersistenceWireup extends PersistenceWireup {
         }
 
     public SqlPersistenceWireup withDialect(ISqlDialect instance) { //virtual
-        logger.debug(Messages.DialectSpecified, instance.getClass().getName());
+        logger.debug(Messages_2.DialectSpecified, instance.getClass().getName());
         this.container.register(instance);
         return this;
     }
 
     public SqlPersistenceWireup pageEvery(int records) { // virtual
-        logger.debug(Messages.PagingSpecified, records);
+        logger.debug(Messages_2.PagingSpecified, records);
         this.pageSize = records;
         return this;
     }

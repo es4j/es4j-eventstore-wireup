@@ -1,25 +1,86 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.lingona.es4j</groupId>
-  <artifactId>es4j-wireup</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <groupId>org.es4j.eventstore</groupId>
+    <artifactId>es4j-eventstore-wireup</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>es4j-wireup</name>
-  <url>http://maven.apache.org</url>
+    <name>es4j-eventstore-wireup</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.es4j.logging</groupId>
+            <artifactId>es4j-logging-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.logging</groupId>
+            <artifactId>es4j-logging-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.es4j.dotnet</groupId>
+            <artifactId>es4j-dotnet-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>        
+        <dependency>
+            <groupId>org.es4j.dotnet</groupId>
+            <artifactId>es4j-dotnet-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.es4j.container</groupId>
+            <artifactId>es4j-container-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.eventstore</groupId>
+            <artifactId>es4j-eventstore-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.eventstore</groupId>
+            <artifactId>es4j-eventstore-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.messaging</groupId>
+            <artifactId>es4j-messaging-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <excludes>
+                        <exclude>EventUpconverterWireup.java</exclude>
+                        <exclude>SqlPersistenceWireup.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
 </project>
