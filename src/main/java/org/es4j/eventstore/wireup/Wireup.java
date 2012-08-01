@@ -3,18 +3,28 @@ package org.es4j.eventstore.wireup;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.es4j.generics.NanoContainer;
-import org.es4j.generics.Resolver;
+import org.es4j.container.NanoContainer;
+import org.es4j.container.Resolver;
+//import org.es4j.dotnet.ConfigurationConnectionFactory;
+//import org.es4j.dotnet.IConnectionFactory;
 import org.es4j.dotnet.TransactionScopeOption;
 import org.es4j.eventstore.api.IPipelineHook;
 import org.es4j.eventstore.api.IStoreEvents;
+import org.es4j.eventstore.api.dispatcher.IDispatchCommits;
 import org.es4j.eventstore.api.dispatcher.IScheduleDispatches;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
 import org.es4j.eventstore.core.DispatchSchedulerPipelineHook;
 import org.es4j.eventstore.core.OptimisticEventStore;
 import org.es4j.eventstore.core.OptimisticPipelineHook;
 import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
+import org.es4j.eventstore.core.logging.ConsoleWindowLogger;
+import org.es4j.eventstore.core.logging.OutputWindowLogger;
 import org.es4j.eventstore.core.persistence.inmemory.InMemoryPersistenceEngine;
+import org.es4j.logging.api.ILog;
+import org.es4j.logging.api.LogFactory;
+import org.es4j.logging.api.LoggerDelegate;
+import org.es4j.persistence.sql.api.ConfigurationConnectionFactory;
+import org.es4j.persistence.sql.api.IConnectionFactory;
 
 
 public class Wireup {
@@ -34,20 +44,37 @@ public class Wireup {
     public static Wireup init() {
         NanoContainer container = new NanoContainer();
 
-        container.register(TransactionScopeOption.Suppress);
-        container.register((IPersistStreams) new InMemoryPersistenceEngine());
-        container.register(new Resolver() {
+      //container.register(TransactionScopeOption.Suppress);
+        container.register(new Resolver<TransactionScopeOption>(){
+
+            @Override
+            public TransactionScopeOption resolve(NanoContainer container) {
+                return TransactionScopeOption.SUPPRESS;
+            }
+        });
+        
+      //container.register((IPersistStreams) new InMemoryPersistenceEngine());
+        container.register(new Resolver<IPersistStreams>(){
+
+            @Override
+            public IPersistStreams resolve(NanoContainer container) {
+                return new InMemoryPersistenceEngine();
+            }
+        });
+        
+        
+        container.register(new Resolver<IStoreEvents>() {
 
             @Override
             public IStoreEvents resolve(NanoContainer context) {
                 TransactionScopeOption        scopeOption = context.resolve(TransactionScopeOption.class);
-                OptimisticPipelineHook        concurrency = scopeOption == TransactionScopeOption.Suppress ? new OptimisticPipelineHook() : null;
+                OptimisticPipelineHook        concurrency = scopeOption == TransactionScopeOption.SUPPRESS ? new OptimisticPipelineHook() : null;
                 DispatchSchedulerPipelineHook scheduler;
                 IScheduleDispatches scheduleDispatches = context.resolve(IScheduleDispatches.class);
                 scheduler = new DispatchSchedulerPipelineHook(scheduleDispatches);
                 EventUpconverterPipelineHook  upconverter = context.resolve(EventUpconverterPipelineHook.class);
 
-                List<IPipelineHook> hooks = context.resolve(IPipelineHook.class);
+                List<IPipelineHook> hooks = context.resolveAll(IPipelineHook.class);
                 hooks = (hooks != null)? hooks : new LinkedList<IPipelineHook>();
                 
                 if(concurrency != null) hooks.add(concurrency);
@@ -67,16 +94,25 @@ public class Wireup {
                                      : this.inner.getContainer();
     }
 
-    public <T> Wireup with(T instance) { // where T : class
-        this.container.register(instance);
+    public <T> Wireup with(final T instance) { // where T : class
+      //this.container.register(instance);
+        this.container.register(new Resolver<T>(){
+
+            @Override
+            public T resolve(NanoContainer container) {
+                //throw new UnsupportedOperationException("Not supported yet.");
+                return instance;
+            }
+        });
         return this;
     }
 
     public Wireup hookIntoPipelineUsing(IPipelineHook... hooks) {
         return this.hookIntoPipelineUsing(Arrays.asList(hooks));
     }
+    
     public Wireup hookIntoPipelineUsing(Iterable<IPipelineHook> hooks) {
-        List<IPipelineHook> collection = new LinkedList<IPipelineHook>();
+        final List<IPipelineHook> collection = new LinkedList<IPipelineHook>();
         if (hooks != null) {
             for (IPipelineHook hook : hooks) {
                 if (hook != null) {
@@ -84,16 +120,87 @@ public class Wireup {
                 }
             }
         }
-        this.getContainer().register(collection);
+      //this.getContainer().register(collection);
+        this.getContainer().register(new Resolver<List<IPipelineHook>>() {
+
+            @Override
+            public List<IPipelineHook> resolve(NanoContainer container) {
+                return collection;
+            }
+        });
+
         return this;
     }
 
     public IStoreEvents build() {
-        if (this.inner != null)
+        if (this.inner != null) {
             return this.inner.build();
-
-        return this.getContainer().resolve/*<IStoreEvents>*/(IStoreEvents.class);
+        }
+        return this.getContainer().resolve(IStoreEvents.class);
     }
+    
+    // Extensions for Logger
+    
+    public Wireup logToConsoleWindow() {
+        //return this.logTo(type => new ConsoleWindowLogger(type));
+        return this.logTo(new LoggerDelegate() {
+
+            @Override
+            public <T> ILog buildLogger(Class<T> typeToLog) {
+                return new ConsoleWindowLogger(typeToLog);
+            }
+        });
+    }
+                
+    public Wireup logToOutputWindow() {
+        //return this.logTo(type => new OutputWindowLogger(type));
+        return this.logTo(new LoggerDelegate() {
+
+            @Override
+            public <T> ILog buildLogger(Class<T> typeToLog) {
+                return new OutputWindowLogger(typeToLog);
+            }
+        });
+    }
+                
+    public Wireup logTo(LoggerDelegate logger) {
+        LogFactory.setBuildLogger(logger);
+        return this;
+    }
+    
+    // Extensions for EventUpconverter
+    
+    public EventUpconverterWireup usingEventUpconversion() {
+        return new EventUpconverterWireup(this);
+    }
+    
+    // Extensions for SynchronousDispatcher
+    
+    public SynchronousDispatchSchedulerWireup usingSynchronousDispatchScheduler() {
+        return this.usingSynchronousDispatchScheduler(null);
+    }
+
+    public SynchronousDispatchSchedulerWireup usingSynchronousDispatchScheduler(IDispatchCommits dispatcher) {
+        return new SynchronousDispatchSchedulerWireup(this, dispatcher);
+    }
+    
+    // Extensions for SqlPersistence
+
+    public SqlPersistenceWireup usingSqlPersistence(String connectionName) {
+        ConfigurationConnectionFactory factory = new ConfigurationConnectionFactory(connectionName);
+        return this.usingSqlPersistence(factory);
+    }
+    
+    public SqlPersistenceWireup usingSqlPersistence(String masterConnectionName, 
+                                                    String replicaConnectionName) {
+        ConfigurationConnectionFactory factory = new ConfigurationConnectionFactory(masterConnectionName, replicaConnectionName, 1);
+        return this.usingSqlPersistence(factory);
+    }
+    
+    public SqlPersistenceWireup usingSqlPersistence(IConnectionFactory factory) {
+        return new SqlPersistenceWireup(this, factory);
+    }
+
 }
 
 

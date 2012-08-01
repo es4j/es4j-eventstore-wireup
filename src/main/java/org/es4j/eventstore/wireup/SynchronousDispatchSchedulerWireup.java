@@ -1,5 +1,48 @@
 package org.es4j.eventstore.wireup;
 
+import org.es4j.eventstore.api.dispatcher.IDispatchCommits;
+import org.es4j.eventstore.api.dispatcher.IScheduleDispatches;
+import org.es4j.eventstore.api.persistence.IPersistStreams;
+import org.es4j.eventstore.core.dispatcher.NullDispatcher;
+import org.es4j.eventstore.core.dispatcher.SynchronousDispatchScheduler;
+import org.es4j.logging.api.ILog;
+import org.es4j.logging.api.LogFactory;
+
+public class SynchronousDispatchSchedulerWireup extends Wireup {
+    private static final ILog logger = LogFactory.buildLogger(SynchronousDispatchSchedulerWireup.class);
+
+    public SynchronousDispatchSchedulerWireup(Wireup wireup, IDispatchCommits dispatcher) {
+        super(wireup);
+	logger.debug(Messages.syncDispatchSchedulerRegistered());
+        
+	this.dispatchTo((dispatcher!=null)? dispatcher : new NullDispatcher());
+        
+        IDispatchCommits    dispatchCommits    = this.getContainer().resolve(IDispatchCommits.class);
+        IPersistStreams     persistStreams     = this.getContainer().resolve(IPersistStreams.class);
+        IScheduleDispatches scheduleDispatches = new SynchronousDispatchScheduler(dispatchCommits, persistStreams);
+        
+	this.getContainer().register(scheduleDispatches);
+    }
+    
+    public SynchronousDispatchSchedulerWireup dispatchTo(IDispatchCommits instance) {
+        logger.debug(Messages.dispatcherRegistered(), instance.getClass().getName());
+        this.getContainer().register(instance);
+        return this;
+    }    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 import com.lingona.eventstore.joliver.api.Dispatcher.IDispatchCommits;
 import com.lingona.eventstore.joliver.api.Dispatcher.IScheduleDispatches;
 import com.lingona.eventstore.joliver.api.Persistence.IPersistStreams;
@@ -41,3 +84,4 @@ public class SynchronousDispatchSchedulerWireup extends Wireup_2 {
         return new SynchronousDispatchSchedulerWireup(this, dispatcher);
     }
 }
+*/

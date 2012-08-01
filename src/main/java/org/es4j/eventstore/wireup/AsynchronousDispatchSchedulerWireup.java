@@ -7,8 +7,8 @@ import org.es4j.eventstore.api.dispatcher.IScheduleDispatches;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
 import org.es4j.eventstore.core.dispatcher.AsynchronousDispatchScheduler;
 import org.es4j.eventstore.core.dispatcher.NullDispatcher;
-import org.es4j.generics.NanoContainer;
-import org.es4j.generics.Resolver;
+import org.es4j.container.NanoContainer;
+import org.es4j.container.Resolver;
 import org.es4j.logging.api.ILog;
 import org.es4j.logging.api.LogFactory;
 
@@ -20,7 +20,7 @@ public class AsynchronousDispatchSchedulerWireup extends Wireup {
         super(wireup);
 		
         TransactionScopeOption option = this.getContainer().resolve(TransactionScopeOption.class);
-        if (option != TransactionScopeOption.Suppress) {
+        if (option != TransactionScopeOption.SUPPRESS) {
             logger.warn(Messages.synchronousDispatcherTwoPhaseCommits());
         }
 
@@ -38,9 +38,16 @@ public class AsynchronousDispatchSchedulerWireup extends Wireup {
         });
     }
 
-    public AsynchronousDispatchSchedulerWireup dispatchTo(IDispatchCommits instance) {
+    public AsynchronousDispatchSchedulerWireup dispatchTo(final IDispatchCommits instance) {
         logger.debug(Messages.dispatcherRegistered(), instance.getClass());
-        this.getContainer().register(instance);
+      //this.getContainer().register(instance);
+        this.getContainer().register(new Resolver<IDispatchCommits>() {
+
+            @Override
+            public IDispatchCommits resolve(NanoContainer container) {
+                return instance;
+            }
+        });
         return this;
     }
 }

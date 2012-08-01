@@ -1,63 +1,69 @@
 package org.es4j.eventstore.wireup;
 
-import com.lingona.eventstore.joliver.api.Serialization.ISerialize;
-import com.lingona.eventstore.joliver.core.system.TransactionScopeOption;
-import com.lingona.eventstore.joliver.persistence.sqlpersistence.IConnectionFactory;
-import com.lingona.eventstore.joliver.persistence.sqlpersistence.ISqlDialect;
-import com.lingona.eventstore.joliver.persistence.sqlpersistence.SqlPersistenceFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.es4j.container.NanoContainer;
+import org.es4j.container.Resolver;
+//import org.es4j.dotnet.IConnectionFactory;
+import org.es4j.dotnet.TransactionScopeOption;
+import org.es4j.logging.api.ILog;
+import org.es4j.logging.api.LogFactory;
+import org.es4j.persistence.sql.api.IConnectionFactory;
+import org.es4j.persistence.sql.api.ISqlDialect;
+import org.es4j.persistence.sql.api.SqlPersistenceFactory;
+import org.es4j.serialization.api.ISerialize;
+
 //using System.Transactions;
+//using Logging;
 //using Persistence.SqlPersistence;
 //using Serialization;
 
-
 public class SqlPersistenceWireup extends PersistenceWireup {
+    private static final ILog logger = LogFactory.buildLogger(SqlPersistenceWireup.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(SqlPersistenceWireup.class);
+    private static final int defaultPageSize = 512;
+    private              int pageSize        = defaultPageSize;
 
-    private final static int DefaultPageSize = 512;
-    private int pageSize = DefaultPageSize;
-
-    public SqlPersistenceWireup(Wireup_2 wireup, IConnectionFactory connectionFactory) {
+    public SqlPersistenceWireup(final Wireup wireup, final IConnectionFactory connectionFactory) {
         super(wireup);
-        logger.debug(Messages_2.ConnectionFactorySpecified, connectionFactory);
+        logger.debug(Messages.ConnectionFactorySpecified, connectionFactory);
 
-        logger.info(Messages_2.AutoDetectDialect); //Verbose
-        
-        ISqlDialect sqlDialect = null;
-        this.container.register((ISqlDialect)null); // auto-detect
-        
-        
-        ISerialize  serializer = this.container.resolve();
-        ISqlDialect dialect    = this.container.resolve();
-        TransactionScopeOption scopeOption = this.container.resolve();
-        
-        SqlPersistenceFactory sqlPersistFactory = new SqlPersistenceFactory(connectionFactory,
-				                                            serializer,
-				                                            dialect,
-				                                            scopeOption,
-				                                            this.pageSize);
-                //.Build());
+        logger.verbose(Messages.AutoDetectDialect);
+        this.getContainer().register(new Resolver<ISqlDialect>() {
 
-			this.container.register(c => new SqlPersistenceFactory(
+            @Override
+            public ISqlDialect resolve(NanoContainer container) {
+                return null; // auto-detect               
+            }
+        });
+        
+        final ISerialize             serializer = this.getContainer().resolve(ISerialize.class);
+        final ISqlDialect            dialect    = this.getContainer().resolve(ISqlDialect.class);
+        final TransactionScopeOption scope      = this.getContainer().resolve(TransactionScopeOption.class);
+        final int                    pageSize   = this.pageSize;
+        this.getContainer().register(new Resolver<SqlPersistenceFactory>() {
+
+            @Override
+            public SqlPersistenceFactory resolve(NanoContainer container) {
+                SqlPersistenceFactory factory = new SqlPersistenceFactory(
 				connectionFactory,
-				c.resolve<ISerialize>(),
-				c.resolve<ISqlDialect>(),
-				c.resolve<TransactionScopeOption>(),
-				this.pageSize).build());
-        }
+				serializer,
+				dialect,
+				scope,
+				pageSize);
+               //.build()) {};
+                return factory;
+            }
+        });
+    }
 
-    public SqlPersistenceWireup withDialect(ISqlDialect instance) { //virtual
-        logger.debug(Messages_2.DialectSpecified, instance.getClass().getName());
-        this.container.register(instance);
+    public SqlPersistenceWireup withDialect(ISqlDialect instance) {
+        logger.debug(Messages.DialectSpecified, instance.getClass().getName());
+        this.getContainer().register(instance);
         return this;
     }
 
-    public SqlPersistenceWireup pageEvery(int records) { // virtual
-        logger.debug(Messages_2.PagingSpecified, records);
+    public SqlPersistenceWireup PageEvery(int records) {
+        logger.debug(Messages.PagingSpecified, records);
         this.pageSize = records;
         return this;
     }
-
 }

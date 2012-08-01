@@ -21,24 +21,14 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.es4j.logging</groupId>
-            <artifactId>es4j-logging-impl</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>        
-        <dependency>
             <groupId>org.es4j.dotnet</groupId>
             <artifactId>es4j-dotnet-api</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
-        </dependency>        
-        <dependency>
-            <groupId>org.es4j.dotnet</groupId>
-            <artifactId>es4j-dotnet-impl</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>        
+        </dependency>             
         <dependency>
             <groupId>org.es4j.container</groupId>
-            <artifactId>es4j-container-api</artifactId>
+            <artifactId>es4j-container</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -56,12 +46,30 @@
             <artifactId>es4j-messaging-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.es4j.serialization</groupId>
+            <artifactId>es4j-serialization-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.serialization</groupId>
+            <artifactId>es4j-serialization-main</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+                
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.es4j.persistence</groupId>
+            <artifactId>es4j-persistence-sql-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     

@@ -1,34 +1,38 @@
 package org.es4j.eventstore.wireup;
 
-import com.lingona.eventstore.joliver.api.Serialization.ISerialize;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 //using Serialization;
 
-public class SerializationWireup extends Wireup_2 {
+import org.es4j.logging.api.ILog;
+import org.es4j.logging.api.LogFactory;
+import org.es4j.serialization.GzipSerializer;
+import org.es4j.serialization.RijndaelSerializer;
+import org.es4j.serialization.api.ISerialize;
 
-    private static final Logger logger = LoggerFactory.getLogger(SerializationWireup.class);
 
-    public SerializationWireup(Wireup_2 inner, ISerialize serializer) {
+public class SerializationWireup extends Wireup {
+
+    private static final ILog logger = LogFactory.buildLogger(SerializationWireup.class);
+
+    public SerializationWireup(Wireup inner, ISerialize serializer) {
         super(inner);
-        this.container.register(serializer);
+        this.getContainer().register(serializer);
     }
 
     public SerializationWireup compress() {
-        logger.debug(Messages_2.ConfiguringCompression);
-        ISerialize wrapped = this.container.resolve();
+        logger.debug(Messages.configuringCompression());
+        ISerialize wrapped = this.getContainer().resolve(ISerialize.class);
 
-        logger.debug(Messages_2.WrappingSerializerGZip, wrapped.getClass().getName());
-        this.container.register < ISerialize > (new GzipSerializer(wrapped));
+        logger.debug(Messages.WrappingSerializerGZip, wrapped.getClass().getName());
+        this.getContainer().register((ISerialize)new GzipSerializer(wrapped));
         return this;
     }
 
     public SerializationWireup encryptWith(byte[] encryptionKey) {
-        Logger.Debug(Messages_2.ConfiguringEncryption);
-        ISerialize wrapped = this.container.resolve();
+        logger.debug(Messages.ConfiguringEncryption);
+        ISerialize wrapped = this.getContainer().resolve(ISerialize.class);
 
-        logger.debug(Messages_2.WrappingSerializerEncryption, wrapped.getClass().getName());
-        this.container.register<ISerialize>(new RijndaelSerializer(wrapped, encryptionKey));
+        logger.debug(Messages.WrappingSerializerEncryption, wrapped.getClass().getName());
+        this.getContainer().register((ISerialize)new RijndaelSerializer(wrapped, encryptionKey));
         return this;
     }
 }
