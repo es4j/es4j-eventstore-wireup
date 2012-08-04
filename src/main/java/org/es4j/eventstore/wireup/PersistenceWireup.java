@@ -1,14 +1,13 @@
 package org.es4j.eventstore.wireup;
 
-import org.es4j.dotnet.TransactionScopeOption;
+import org.es4j.dotnet.data.TransactionScopeOption;
 import org.es4j.eventstore.api.IStoreEvents;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
 import org.es4j.eventstore.core.diagnostics.PerformanceCounterPersistenceEngine;
-import org.es4j.eventstore.core.persistence.inmemory.InMemoryPersistenceEngine;
 import org.es4j.exceptions.ArgumentNullException;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
 import org.es4j.serialization.api.ISerialize;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
 
 //using System.Transactions;
 //using Persistence;
@@ -22,7 +21,7 @@ public class PersistenceWireup extends Wireup {
 
     public PersistenceWireup(Wireup inner) {
         super(inner);
-        this.getContainer().register(TransactionScopeOption.SUPPRESS);
+        this.getContainer().register(TransactionScopeOption.Suppress);
     }
 
     public PersistenceWireup withPersistence(IPersistStreams instance) {
@@ -53,7 +52,7 @@ public class PersistenceWireup extends Wireup {
     
     public PersistenceWireup enlistInAmbientTransaction() {
         logger.debug(Messages.ConfiguringEngineEnlistment);
-        this.getContainer().register(TransactionScopeOption.REQUIRED);
+        this.getContainer().register(TransactionScopeOption.Required);
         return this;
     }
 
@@ -71,6 +70,27 @@ public class PersistenceWireup extends Wireup {
         }
         return super.build();
     }
+    
+    
+    // Serialization Extensions
+    
+    public SerializationWireup UsingJsonSerialization() {
+        return this.usingCustomSerialization(new JsonSerializer());
+    }
+
+    public SerializationWireup UsingBsonSerialization() {
+        return this.usingCustomSerialization(new BsonSerializer());
+    }
+    
+    // SerializationExtensionWirewup
+    
+    public SerializationWireup usingBinarySerialization() {
+        return this.usingCustomSerialization(new BinarySerializer());
+    }
+
+    public SerializationWireup usingCustomSerialization(ISerialize serializer) {
+        return new SerializationWireup(this, serializer);
+    }    
 }
 
 

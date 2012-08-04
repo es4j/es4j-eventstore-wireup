@@ -2,14 +2,13 @@ package org.es4j.eventstore.wireup;
 
 import org.es4j.container.NanoContainer;
 import org.es4j.container.Resolver;
-//import org.es4j.dotnet.IConnectionFactory;
-import org.es4j.dotnet.TransactionScopeOption;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
-import org.es4j.persistence.sql.api.IConnectionFactory;
-import org.es4j.persistence.sql.api.ISqlDialect;
-import org.es4j.persistence.sql.api.SqlPersistenceFactory;
+import org.es4j.dotnet.data.TransactionScopeOption;
+import org.es4j.persistence.sql.IConnectionFactory;
+import org.es4j.persistence.sql.ISqlDialect;
+import org.es4j.persistence.sql.SqlPersistenceFactory;
 import org.es4j.serialization.api.ISerialize;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
 
 //using System.Transactions;
 //using Logging;

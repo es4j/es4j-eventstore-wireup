@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.es4j.container.Resolver;
-import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
 import org.es4j.container.NanoContainer;
+import org.es4j.container.Resolver;
 import org.es4j.eventstore.api.conversion.IUpconvertEvents;
 import org.es4j.eventstore.core.conversion.Converter;
+import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
 import org.es4j.exceptions.ArgumentNullException;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
 
 
 public class EventUpconverterWireup extends Wireup {

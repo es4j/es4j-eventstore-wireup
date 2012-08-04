@@ -2,11 +2,11 @@ package org.es4j.eventstore.wireup;
 
 //using Serialization;
 
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
 import org.es4j.serialization.GzipSerializer;
 import org.es4j.serialization.RijndaelSerializer;
 import org.es4j.serialization.api.ISerialize;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
 
 
 public class SerializationWireup extends Wireup {

@@ -5,8 +5,9 @@ import org.es4j.eventstore.api.dispatcher.IScheduleDispatches;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
 import org.es4j.eventstore.core.dispatcher.NullDispatcher;
 import org.es4j.eventstore.core.dispatcher.SynchronousDispatchScheduler;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
+
 
 public class SynchronousDispatchSchedulerWireup extends Wireup {
     private static final ILog logger = LogFactory.buildLogger(SynchronousDispatchSchedulerWireup.class);

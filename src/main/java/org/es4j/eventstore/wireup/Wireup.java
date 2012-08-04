@@ -7,7 +7,7 @@ import org.es4j.container.NanoContainer;
 import org.es4j.container.Resolver;
 //import org.es4j.dotnet.ConfigurationConnectionFactory;
 //import org.es4j.dotnet.IConnectionFactory;
-import org.es4j.dotnet.TransactionScopeOption;
+import org.es4j.dotnet.data.TransactionScopeOption;
 import org.es4j.eventstore.api.IPipelineHook;
 import org.es4j.eventstore.api.IStoreEvents;
 import org.es4j.eventstore.api.dispatcher.IDispatchCommits;
@@ -20,11 +20,13 @@ import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
 import org.es4j.eventstore.core.logging.ConsoleWindowLogger;
 import org.es4j.eventstore.core.logging.OutputWindowLogger;
 import org.es4j.eventstore.core.persistence.inmemory.InMemoryPersistenceEngine;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
-import org.es4j.logging.api.LoggerDelegate;
-import org.es4j.persistence.sql.api.ConfigurationConnectionFactory;
-import org.es4j.persistence.sql.api.IConnectionFactory;
+import org.es4j.persistence.sql.ConfigurationConnectionFactory;
+import org.es4j.persistence.sql.IConnectionFactory;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
+import org.es4j.util.logging.LoggerDelegate;
+//import org.es4j.persistence.sql.api.ConfigurationConnectionFactory;
+//import org.es4j.persistence.sql.api.IConnectionFactory;
 
 
 public class Wireup {
@@ -49,7 +51,7 @@ public class Wireup {
 
             @Override
             public TransactionScopeOption resolve(NanoContainer container) {
-                return TransactionScopeOption.SUPPRESS;
+                return TransactionScopeOption.Suppress;
             }
         });
         
@@ -68,7 +70,7 @@ public class Wireup {
             @Override
             public IStoreEvents resolve(NanoContainer context) {
                 TransactionScopeOption        scopeOption = context.resolve(TransactionScopeOption.class);
-                OptimisticPipelineHook        concurrency = scopeOption == TransactionScopeOption.SUPPRESS ? new OptimisticPipelineHook() : null;
+                OptimisticPipelineHook        concurrency = scopeOption == TransactionScopeOption.Suppress ? new OptimisticPipelineHook() : null;
                 DispatchSchedulerPipelineHook scheduler;
                 IScheduleDispatches scheduleDispatches = context.resolve(IScheduleDispatches.class);
                 scheduler = new DispatchSchedulerPipelineHook(scheduleDispatches);

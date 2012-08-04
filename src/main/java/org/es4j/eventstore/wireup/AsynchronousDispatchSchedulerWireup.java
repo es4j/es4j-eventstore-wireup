@@ -1,7 +1,7 @@
 package org.es4j.eventstore.wireup;
 
 import java.util.concurrent.ExecutorService;
-import org.es4j.dotnet.TransactionScopeOption;
+import org.es4j.dotnet.data.TransactionScopeOption;
 import org.es4j.eventstore.api.dispatcher.IDispatchCommits;
 import org.es4j.eventstore.api.dispatcher.IScheduleDispatches;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
@@ -9,8 +9,8 @@ import org.es4j.eventstore.core.dispatcher.AsynchronousDispatchScheduler;
 import org.es4j.eventstore.core.dispatcher.NullDispatcher;
 import org.es4j.container.NanoContainer;
 import org.es4j.container.Resolver;
-import org.es4j.logging.api.ILog;
-import org.es4j.logging.api.LogFactory;
+import org.es4j.util.logging.ILog;
+import org.es4j.util.logging.LogFactory;
 
 
 public class AsynchronousDispatchSchedulerWireup extends Wireup {
@@ -20,7 +20,7 @@ public class AsynchronousDispatchSchedulerWireup extends Wireup {
         super(wireup);
 		
         TransactionScopeOption option = this.getContainer().resolve(TransactionScopeOption.class);
-        if (option != TransactionScopeOption.SUPPRESS) {
+        if (option != TransactionScopeOption.Suppress) {
             logger.warn(Messages.synchronousDispatcherTwoPhaseCommits());
         }
 
