@@ -59,6 +59,11 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.es4j.serialization</groupId>
+            <artifactId>es4j-serialization-json</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>        <dependency>
             <groupId>org.es4j.persistence.sql</groupId>
             <artifactId>es4j-persistence-sql</artifactId>
             <version>1.0-SNAPSHOT</version>
