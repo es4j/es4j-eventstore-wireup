@@ -5,6 +5,9 @@ import org.es4j.eventstore.api.IStoreEvents;
 import org.es4j.eventstore.api.persistence.IPersistStreams;
 import org.es4j.eventstore.core.diagnostics.PerformanceCounterPersistenceEngine;
 import org.es4j.exceptions.ArgumentNullException;
+import org.es4j.serialization.BinarySerializer;
+import org.es4j.serialization.BsonSerializer;
+import org.es4j.serialization.JsonSerializer;
 import org.es4j.serialization.api.ISerialize;
 import org.es4j.util.logging.ILog;
 import org.es4j.util.logging.LogFactory;
@@ -74,11 +77,11 @@ public class PersistenceWireup extends Wireup {
     
     // Serialization Extensions
     
-    public SerializationWireup UsingJsonSerialization() {
+    public SerializationWireup usingJsonSerialization() {
         return this.usingCustomSerialization(new JsonSerializer());
     }
 
-    public SerializationWireup UsingBsonSerialization() {
+    public SerializationWireup usingBsonSerialization() {
         return this.usingCustomSerialization(new BsonSerializer());
     }
     

@@ -6,7 +6,7 @@ public class Assembly {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public Iterable<Class> getTypes() {
+    public Iterable<Class<?>> getTypes() {
         throw new UnsupportedOperationException("Not yet implemented");
     }
     

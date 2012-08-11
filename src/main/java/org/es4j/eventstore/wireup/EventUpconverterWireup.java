@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.es4j.container.NanoContainer;
 import org.es4j.container.Resolver;
-import org.es4j.eventstore.api.conversion.IUpconvertEvents;
+import org.es4j.eventstore.api.conversion.UpconvertEvents;
 import org.es4j.eventstore.core.conversion.Converter;
 import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
 import org.es4j.exceptions.ArgumentNullException;
@@ -104,7 +104,7 @@ public class EventUpconverterWireup extends Wireup {
         return this;
     }
 
-    public <TSource, TTarget> EventUpconverterWireup addConverter(IUpconvertEvents<TSource, TTarget> converter) {
+    public <TSource, TTarget> EventUpconverterWireup addConverter(UpconvertEvents<TSource, TTarget> converter) {
         if (converter == null) {
             throw new ArgumentNullException("converter");
         }
