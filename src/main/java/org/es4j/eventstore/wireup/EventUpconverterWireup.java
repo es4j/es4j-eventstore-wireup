@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.es4j.container.NanoContainer;
 import org.es4j.container.Resolver;
+import org.es4j.dotnet.Assembly;
 import org.es4j.eventstore.api.conversion.UpconvertEvents;
 import org.es4j.eventstore.core.conversion.Converter;
 import org.es4j.eventstore.core.conversion.EventUpconverterPipelineHook;
@@ -17,7 +18,7 @@ import org.es4j.util.logging.LogFactory;
 public class EventUpconverterWireup extends Wireup {
     private static final ILog logger = LogFactory.buildLogger(EventUpconverterWireup.class);
     
-    private final Map<Class, Converter<Object,Object>> registered = new HashMap<Class, Converter<Object,Object>>();
+    private final Map<Class<?>, Converter<Object,Object>> registered = new HashMap<Class<?>, Converter<Object,Object>>();
     private final List<Assembly>                       assembliesToScan = new LinkedList<Assembly>();
 
     public EventUpconverterWireup(Wireup wireup) {
@@ -34,7 +35,7 @@ public class EventUpconverterWireup extends Wireup {
                 //if (!assembliesToScan.Any()) {
                 //    assembliesToScan.AddRange(getAllAssemblies());
                 //}
-                Map<Class, Converter<Object,Object>> converters = getConverters(assembliesToScan);
+                Map<Class<?>, Converter<Object,Object>> converters = getConverters(assembliesToScan);
                 return new EventUpconverterPipelineHook(converters);
             }
         });
@@ -49,8 +50,8 @@ public class EventUpconverterWireup extends Wireup {
         return assemblies;
     }
     
-    private static Map<Class, Converter<Object,Object>> getConverters(Iterable<Assembly> toScan) {
-        Map<Class, Converter<Object,Object>> converters = new HashMap<Class, Converter<Object,Object>>();
+    private static Map<Class<?>, Converter<Object,Object>> getConverters(Iterable<Assembly> toScan) {
+        Map<Class<?>, Converter<Object,Object>> converters = new HashMap<Class<?>, Converter<Object,Object>>();
         /*
         var c = from a in toScan
             from t in a.GetTypes()
